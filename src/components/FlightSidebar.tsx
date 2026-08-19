@@ -1,5 +1,6 @@
 import { formatNumber, formatTime } from "@/lib/normalize";
 import { STALE_THRESHOLD_SECONDS, type Flight } from "@/lib/types";
+import { Link } from "@tanstack/react-router";
 
 interface FlightSidebarProps {
   flights: Flight[];
@@ -11,6 +12,7 @@ interface FlightSidebarProps {
   staleDropped: number;
   isLoading: boolean;
   isFetching: boolean;
+  historyCount: number;
 }
 
 function Detail({ label, value }: { label: string; value: string }) {
@@ -32,6 +34,7 @@ export function FlightSidebar({
   staleDropped,
   isLoading,
   isFetching,
+  historyCount,
 }: FlightSidebarProps) {
   return (
     <aside className="flex h-full min-h-0 flex-col border-border bg-panel md:w-96 md:border-l">
@@ -99,6 +102,14 @@ export function FlightSidebar({
               {selected.originCountry} · {selected.icao24.toUpperCase()}
             </p>
 
+            <Link
+              to="/flights/$icao24"
+              params={{ icao24: selected.icao24 }}
+              className="mt-3 inline-flex text-[11px] uppercase tracking-[0.18em] text-telemetry hover:text-radar"
+            >
+              Full details →
+            </Link>
+
             <dl className="mt-4 grid grid-cols-2 gap-2">
               <Detail label="Altitude" value={formatNumber(selected.altitudeFt, "ft")} />
               <Detail label="Speed" value={formatNumber(selected.speedKts, "kts")} />
@@ -155,7 +166,8 @@ export function FlightSidebar({
       </div>
 
       <footer className="border-t border-border px-4 py-3 text-[10px] leading-relaxed text-muted-foreground">
-        Source: OpenSky Network · bounds 4°N–14°N, 2°E–15°E
+        Source: OpenSky Network · {historyCount} snapshots held in memory · bounds 4°N–14°N,
+        2°E–15°E
       </footer>
     </aside>
   );

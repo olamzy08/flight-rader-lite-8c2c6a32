@@ -28,6 +28,8 @@ export const getNigeriaFlights = createServerFn({ method: "GET" }).handler(
         states?: (number | string | boolean | null)[][] | null;
       };
 
+      console.info("[OpenSky] raw API response", json);
+
       const normalized = normalizeFlights(json.states, json.time ?? now);
       return { ...normalized, error: null };
     } catch (err) {

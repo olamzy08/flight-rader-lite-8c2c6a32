@@ -28,11 +28,16 @@ export function normalizeFlights(
   const fetchedAt = serverTime * 1000;
   const flights: Flight[] = [];
   let staleDropped = 0;
+  let boundsDropped = 0;
+  let nullPositionDropped = 0;
 
   for (const s of states ?? []) {
     const lon = num(s[5]);
     const lat = num(s[6]);
-    if (lat === null || lon === null) continue;
+    if (lat === null || lon === null) {
+      nullPositionDropped += 1;
+      continue;
+    }
 
     if (
       lat < NIGERIA_BOUNDS.latMin ||
@@ -40,6 +45,7 @@ export function normalizeFlights(
       lon < NIGERIA_BOUNDS.lonMin ||
       lon > NIGERIA_BOUNDS.lonMax
     ) {
+      boundsDropped += 1;
       continue;
     }
 
@@ -72,6 +78,14 @@ export function normalizeFlights(
   }
 
   flights.sort((a, b) => a.callsign.localeCompare(b.callsign));
+
+  console.info("[OpenSky] filter counts", {
+    raw: states?.length ?? 0,
+    boundsDropped,
+    staleDropped,
+    nullPositionDropped,
+    visible: flights.length,
+  });
 
   return { flights, fetchedAt, staleDropped };
 }

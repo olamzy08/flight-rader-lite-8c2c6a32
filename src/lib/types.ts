@@ -26,6 +26,14 @@ export interface FlightsResponse {
   error: string | null;
 }
 
+export interface FlightSnapshot {
+  icao24: string;
+  callsign: string;
+  altitudeFt: number | null;
+  speedKts: number | null;
+  recordedAt: number;
+}
+
 export const NIGERIA_BOUNDS = {
   latMin: 4,
   latMax: 14,
