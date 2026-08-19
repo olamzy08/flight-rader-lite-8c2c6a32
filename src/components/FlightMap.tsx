@@ -88,6 +88,9 @@ export default function FlightMap({ flights, selectedId, onSelect }: FlightMapPr
           position={[flight.latitude, flight.longitude]}
           icon={planeIcon(flight.heading, flight.icao24 === selectedId)}
           title={flight.callsign}
+          alt={flight.callsign}
+          zIndexOffset={1000}
+          riseOnHover
           eventHandlers={{ click: () => onSelect(flight.icao24) }}
         />
       ))}
